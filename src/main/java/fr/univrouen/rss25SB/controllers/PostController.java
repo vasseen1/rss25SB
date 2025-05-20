@@ -22,7 +22,10 @@ public class PostController {
 
     @PostMapping("/rss25SB/delete/{id}")
     public String delete(@PathVariable int id) {
-        postService.delete(id);
-        return "L'id à supprimer est : " + id;
+        boolean result = postService.delete(id);
+        if (result) {
+            return "L'article a bien été supprimé";
+        }
+        return "erreur, article introuvable";
     }
 }
