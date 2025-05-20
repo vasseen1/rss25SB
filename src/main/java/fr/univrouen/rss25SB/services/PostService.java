@@ -97,6 +97,21 @@ public class PostService {
                     Item item = new Item();
                     item.setTitle(title);
                     item.setPublished(date);
+                    Element contentElem = (Element) itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "content").item(0);
+                    if (contentElem != null) {
+                        String type = contentElem.getAttribute("type");
+                        if (type != null && !type.isEmpty()) {
+                            item.setContentType(type);
+                        } else {
+                            item.setContentType("text");
+                        }
+                        // Optionnel : contenu source
+                        String contentSrc = contentElem.getTextContent();
+                        item.setContentSrc(contentSrc);
+                    } else {
+                        item.setContentType("text"); // valeur par défaut si pas d'élément <content>
+                    }
+            
                     Item savedItem = itemRepository.save(item);
                     lastInsertedId = savedItem.getId();
                 } else {

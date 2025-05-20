@@ -3,7 +3,6 @@ package fr.univrouen.rss25SB.entities;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "item")
@@ -14,7 +13,7 @@ public class Item {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private UUID guid;
+    private String guid;
 
     @Column(length = 128, nullable = false)
     private String title;
@@ -24,7 +23,7 @@ public class Item {
     private OffsetDateTime updated;
 
     @Column(name = "content_type", nullable = false, length = 10)
-    private String contentType; // "text" ou "html"
+    private String contentType; 
 
     @Column(name = "content_src")
     private String contentSrc;
@@ -59,11 +58,11 @@ public class Item {
         this.id = id;
     }
 
-    public UUID getGuid() {
+    public String getGuid() {
         return guid;
     }
 
-    public void setGuid(UUID guid) {
+    public void setGuid(String guid) {
         this.guid = guid;
     }
 
