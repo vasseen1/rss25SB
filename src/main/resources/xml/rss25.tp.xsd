@@ -84,25 +84,26 @@ elementFormDefault="qualified">
 							</xs:complexType>
 						</xs:element> 
 					
-						<xs:element name="author" minOccurs="1" maxOccurs="unbounded">
-							<xs:complexType>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="author">
+								<xs:complexType>
 								<xs:all>
 									<xs:element name="uri" type="xs:anyURI" minOccurs="0"/>
 									<xs:element name="email" type="xs:string" minOccurs="0"/>
 									<xs:element name="name" type="xs:string" minOccurs="1"/>
 								</xs:all>
-							</xs:complexType>
-						</xs:element>
-
-						<xs:element name="contributor" minOccurs="0" maxOccurs="unbounded">
-							<xs:complexType>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="contributor">
+								<xs:complexType>
 								<xs:all>
 									<xs:element name="uri" type="xs:anyURI" minOccurs="0"/>
 									<xs:element name="email" type="xs:string" minOccurs="0"/>
 									<xs:element name="name" type="xs:string" minOccurs="1"/>
 								</xs:all>
-							</xs:complexType>
-						</xs:element>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
 					
 					</xs:sequence>
 				</xs:complexType>
