@@ -10,7 +10,11 @@ import fr.univrouen.rss25SB.services.HtmlService;
 @RestController
 public class HTMLController {
 
-    private HtmlService HtmlService = new HtmlService();
+    private final HtmlService HtmlService;
+
+    public HTMLController(HtmlService HtmlService) {
+        this.HtmlService = HtmlService;
+    }
 
     
 
