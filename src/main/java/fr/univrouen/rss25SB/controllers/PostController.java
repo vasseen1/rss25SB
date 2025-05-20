@@ -19,6 +19,7 @@ public class PostController {
         this.postService = postService;
     }
 
+    @PostMapping(value = "/rss25SB/insert", consumes = "application/xml", produces = "application/xml")
     public ResponseEntity<String> insertRssFeed(String rssXml) {
 
         boolean success = true; // simuler succès
