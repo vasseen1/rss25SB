@@ -22,20 +22,33 @@ public class PostController {
 
     @PostMapping(value = "/rss25SB/insert", consumes = "application/xml", produces = "application/xml")
     public ResponseEntity<String> insertRssFeed(@RequestBody String rssXml) {
+        int result = postService.insertRssFeed(rssXml);
 
-        boolean success = true; // simuler succès
+        String responseXml;
+        HttpStatus status;
 
-        if (success) {
-            String responseXml = "<response><id>123</id><status>INSERTED</status></response>";
-            return ResponseEntity.ok()
-                .header("Content-Type", "application/xml")
-                .body(responseXml);
-        } else {
-            String responseXml = "<response><status>ERROR</status></response>";
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .header("Content-Type", "application/xml")
-                .body(responseXml);
+        switch (result) {
+            case -1:
+                responseXml = "<response><status>ERROR</status><message>Invalid XML/XSD</message></response>";
+                status = HttpStatus.BAD_REQUEST;
+                break;
+            case -2:
+                responseXml = "<response><status>ERROR</status><message>Item already exists</message></response>";
+                status = HttpStatus.CONFLICT;
+                break;
+            case -3:
+                responseXml = "<response><status>ERROR</status><message>Internal server error</message></response>";
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+                break;
+            default:
+                responseXml = "<response><id>" + result + "</id><status>INSERTED</status></response>";
+                status = HttpStatus.OK;
+                break;
         }
+
+        return ResponseEntity.status(status)
+                .header("Content-Type", "application/xml")
+                .body(responseXml);
     }
 
     @PostMapping("/rss25SB/delete/{id}")
