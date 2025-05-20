@@ -11,7 +11,7 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 1024)
     private String guid;
 
     @Column(length = 128, nullable = false)
@@ -24,14 +24,14 @@ public class Item {
     @Column(name = "content_type", nullable = false, length = 10)
     private String contentType; 
 
-    @Column(name = "content_src")
+    @Column(name = "content_src", length = 2048)
     private String contentSrc;
 
     // Image attributes
     @Column(name = "image_type", length = 50)
     private String imageType;
 
-    @Column(name = "image_href")
+    @Column(name = "image_href", length = 2048)
     private String imageHref;
 
     @Column(name = "image_alt", length = 255)
@@ -40,16 +40,16 @@ public class Item {
     @Column(name = "image_length")
     private Integer imageLength;
     
-    @Column(name = "category")
+    @Column(name = "category", length = 255)
     private String category;
 
-    @Column(name = "authorName")
+    @Column(name = "authorName", length = 255)
     private String authorName;
 
-    @Column(name = "authorMail")
+    @Column(name = "authorMail", length = 255)
     private String authorMail;
 
-    @Column(name = "authorUri")
+    @Column(name = "authorUri", length = 2048)
     private String authorUri;
 
     // Getters and Setters
