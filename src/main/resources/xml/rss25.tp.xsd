@@ -29,6 +29,7 @@ elementFormDefault="qualified">
 					<xs:simpleContent>
 					<xs:extension base="xs:anyURI">
 						<xs:attribute name="rel" type="xs:string" use="optional"/>
+						<xs:attribute name="type" type="xs:string" use="optional"/>
 					</xs:extension>
 					</xs:simpleContent>
 				</xs:complexType>
