@@ -41,6 +41,7 @@ elementFormDefault="qualified">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="guid" type="RFC3987"/>
+						<xs:element name="uri" type="xs:anyURI"/>
 					
 						<xs:element name="title">
 							<xs:simpleType>
