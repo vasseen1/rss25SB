@@ -12,11 +12,14 @@ import javax.xml.validation.SchemaFactory;
 
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
+
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.InputSource;
 
 import org.w3c.dom.*;
+
 import fr.univrouen.rss25SB.entities.Item;
 import fr.univrouen.rss25SB.repositories.ItemRepository;
 
@@ -56,76 +59,123 @@ public class PostService {
         if (!validateXMLSchema("/xml/rss25.tp.xsd", rssXml)) {
             return -1;
         }
-
+    
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(rssXml)));
-
+    
             NodeList itemNodes = doc.getElementsByTagNameNS("http://univrouen.fr/rss25", "item");
-
+    
             long lastInsertedId = -1;
-
+    
             for (int i = 0; i < itemNodes.getLength(); i++) {
                 Element itemElem = (Element) itemNodes.item(i);
-            
+    
+                // Guid et titre
+                String guid = itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "guid").item(0).getTextContent();
                 String title = itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "title").item(0).getTextContent();
-                String dateStr = null;
-                if (itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "published").getLength() > 0) {
-                    dateStr = itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "published").item(0).getTextContent();
-                } else if (itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "updated").getLength() > 0) {
-                    dateStr = itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "updated").item(0).getTextContent();
+    
+                // Vérifier si l'item existe déjà
+                Optional<Item> exists = itemRepository.findByGuid(guid);
+                if (exists.isPresent()) {
+                    return -2;
                 }
-            
-                // Parse la date si elle existe, sinon laisse null
-                OffsetDateTime date = null;
-                if (dateStr != null) {
-                    date = OffsetDateTime.parse(dateStr);
+    
+                // Category (attribut "term")
+                Element categoryElem = (Element) itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "category").item(0);
+                String categoryTerm = null;
+                if (categoryElem != null) {
+                    categoryTerm = categoryElem.getAttribute("term");
                 }
-            
-                // Vérifie que la date n'est pas nulle avant de faire la requête
-                boolean exists = false;
-                if (date != null) {
-                    exists = itemRepository.existsByTitleAndPublished(title, date);
+    
+                // Dates
+                String publishedStr = getTextContentIfExists(itemElem, "published");
+                String updatedStr = getTextContentIfExists(itemElem, "updated");
+    
+                OffsetDateTime published = (publishedStr != null) ? OffsetDateTime.parse(publishedStr) : null;
+                OffsetDateTime updated = (updatedStr != null) ? OffsetDateTime.parse(updatedStr) : null;
+    
+                // Création Item
+                Item item = new Item();
+                item.setGuid(guid);
+                item.setTitle(title);
+                item.setCategory(categoryTerm);
+                item.setPublished(published);
+                item.setUpdated(updated);
+    
+                // Content
+                Element contentElem = (Element) itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "content").item(0);
+                if (contentElem != null) {
+                    String type = contentElem.getAttribute("type");
+                    item.setContentType((type != null && !type.isEmpty()) ? type : "text");
+                    item.setContentSrc(contentElem.getTextContent());
                 } else {
-                    // Si tu veux gérer le cas où il n'y a pas de date, tu peux vérifier juste par title
-                    exists = itemRepository.existsByTitle(title);
+                    item.setContentType("text");
                 }
-            
-                if (!exists) {
-                    Item item = new Item();
-                    item.setTitle(title);
-                    item.setPublished(date);
-                    Element contentElem = (Element) itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "content").item(0);
-                    if (contentElem != null) {
-                        String type = contentElem.getAttribute("type");
-                        if (type != null && !type.isEmpty()) {
-                            item.setContentType(type);
-                        } else {
-                            item.setContentType("text");
+    
+                // Image
+                Element imageElem = (Element) itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "image").item(0);
+                if (imageElem != null) {
+                    item.setImageType(imageElem.getAttribute("type"));
+                    item.setImageHref(imageElem.getAttribute("href"));
+                    item.setImageAlt(imageElem.getAttribute("alt"));
+                    String lengthAttr = imageElem.getAttribute("length");
+                    if (lengthAttr != null && !lengthAttr.isEmpty()) {
+                        try {
+                            item.setImageLength(Integer.parseInt(lengthAttr));
+                        } catch (NumberFormatException e) {
+                            // Ignore or log le problème
                         }
-                        // Optionnel : contenu source
-                        String contentSrc = contentElem.getTextContent();
-                        item.setContentSrc(contentSrc);
-                    } else {
-                        item.setContentType("text"); // valeur par défaut si pas d'élément <content>
                     }
-            
-                    Item savedItem = itemRepository.save(item);
-                    lastInsertedId = savedItem.getId();
-                } else {
-                    return -2; // l'item existe déjà
                 }
+    
+                // Auteur ou contributeur (priorité à author)
+                Element authorElem = (Element) itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "author").item(0);
+                Element contributorElem = (Element) itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "contributor").item(0);
+    
+                if (authorElem != null) {
+                    Element nameElem = (Element) authorElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "name").item(0);
+                    if (nameElem != null) {
+                        item.setAuthorName(nameElem.getTextContent().trim());
+                    }
+                    Element mailElem = (Element) authorElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "mail").item(0);
+                    if (mailElem != null) {
+                        item.setAuthorMail(mailElem.getTextContent().trim());
+                    }
+                    Element uriElem = (Element) authorElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "uri").item(0);
+                    if (uriElem != null) {
+                        item.setAuthorUri(uriElem.getTextContent().trim());
+                    }
+                } else if (contributorElem != null) {
+                    Element nameElem = (Element) contributorElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "name").item(0);
+                    if (nameElem != null) {
+                        item.setAuthorName(nameElem.getTextContent().trim());
+                    }
+                    // Pas d'email ni uri dans ton exemple pour contributor, mais tu peux gérer si besoin
+                }
+    
+                // Sauvegarde
+                Item savedItem = itemRepository.save(item);
+                lastInsertedId = savedItem.getId();
             }
-            
-
+    
             return (int) lastInsertedId;
-
+    
         } catch (Exception e) {
             e.printStackTrace();
             return -3;
         }
+    }
+    
+    // Helper pour extraire le texte d'un élément si il existe
+    private String getTextContentIfExists(Element parent, String tagName) {
+        NodeList list = parent.getElementsByTagNameNS("http://univrouen.fr/rss25", tagName);
+        if (list.getLength() > 0) {
+            return list.item(0).getTextContent();
+        }
+        return null;
     }
     
 }

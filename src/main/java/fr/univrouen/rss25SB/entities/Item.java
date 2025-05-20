@@ -2,7 +2,6 @@ package fr.univrouen.rss25SB.entities;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "item")
@@ -40,13 +39,18 @@ public class Item {
 
     @Column(name = "image_length")
     private Integer imageLength;
+    
+    @Column(name = "category")
+    private String category;
 
-    // Relations
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Category> categories;
+    @Column(name = "authorName")
+    private String authorName;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Author> authors;
+    @Column(name = "authorMail")
+    private String authorMail;
+
+    @Column(name = "authorUri")
+    private String authorUri;
 
     // Getters and Setters
 
@@ -138,20 +142,38 @@ public class Item {
         this.imageLength = imageLength;
     }
 
-    public List<Category> getCategories() {
-        return categories;
+    public String getCategory() {
+        return category;
     }
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public List<Author> getAuthors() {
-        return authors;
+    public String getAuthorName() {
+        return authorName;
     }
 
-    public void setAuthors(List<Author> authors) {
-        this.authors = authors;
+    public void setAuthorName(String name) {
+        this.authorName = name;
     }
+
+    public String getAuthorMail() {
+        return authorMail;
+    }
+
+    public void setAuthorMail(String mail) {
+        this.authorMail = mail;
+    }
+
+    public String getAuthorUri() {
+        return authorUri;
+    }
+
+
+    public void setAuthorUri(String uri) {
+        this.authorUri = uri;
+    }
+    
 }
 
