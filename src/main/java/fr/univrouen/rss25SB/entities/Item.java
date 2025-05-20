@@ -49,6 +49,110 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Author> authors;
 
-    // getters & setters
+    // Getters and Setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public UUID getGuid() {
+        return guid;
+    }
+
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public OffsetDateTime getPublished() {
+        return published;
+    }
+
+    public void setPublished(OffsetDateTime published) {
+        this.published = published;
+    }
+
+    public OffsetDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(OffsetDateTime updated) {
+        this.updated = updated;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getContentSrc() {
+        return contentSrc;
+    }
+
+    public void setContentSrc(String contentSrc) {
+        this.contentSrc = contentSrc;
+    }
+
+    public String getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
+    }
+
+    public String getImageHref() {
+        return imageHref;
+    }
+
+    public void setImageHref(String imageHref) {
+        this.imageHref = imageHref;
+    }
+
+    public String getImageAlt() {
+        return imageAlt;
+    }
+
+    public void setImageAlt(String imageAlt) {
+        this.imageAlt = imageAlt;
+    }
+
+    public Integer getImageLength() {
+        return imageLength;
+    }
+
+    public void setImageLength(Integer imageLength) {
+        this.imageLength = imageLength;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
+    }
 }
 

@@ -1,6 +1,8 @@
 package fr.univrouen.rss25SB.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,13 +19,21 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping("/rss25SB/insert")
-    public String insert() {
-        boolean result = postService.insert();
-        if (result) {
-            return "Ok";
+    public ResponseEntity<String> insertRssFeed(String rssXml) {
+
+        boolean success = true; // simuler succès
+
+        if (success) {
+            String responseXml = "<response><id>123</id><status>INSERTED</status></response>";
+            return ResponseEntity.ok()
+                .header("Content-Type", "application/xml")
+                .body(responseXml);
+        } else {
+            String responseXml = "<response><status>ERROR</status></response>";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .header("Content-Type", "application/xml")
+                .body(responseXml);
         }
-        return "not ok, not inserted";
     }
 
     @PostMapping("/rss25SB/delete/{id}")

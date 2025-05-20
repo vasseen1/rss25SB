@@ -7,4 +7,5 @@ import java.util.UUID;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     // Méthode pour trouver un item par son GUID (UUID)
     Item findByGuid(UUID guid);
+    boolean existsByTitleAndDate(String title, String date);
 }
