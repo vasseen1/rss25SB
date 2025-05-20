@@ -3,9 +3,12 @@ package fr.univrouen.rss25SB.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import fr.univrouen.rss25SB.entities.Item;
 import fr.univrouen.rss25SB.repositories.ItemRepository;
 
+@Service
 public class HtmlService {
 
     private final ItemRepository itemRepository;
@@ -21,5 +24,4 @@ public class HtmlService {
     public Optional<Item> resumeById(long id) {
         return itemRepository.findById(id);
     }
-    
 }
