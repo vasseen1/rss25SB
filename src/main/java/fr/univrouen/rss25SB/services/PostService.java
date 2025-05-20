@@ -46,6 +46,7 @@ public class PostService {
             validator.validate(new StreamSource(new java.io.StringReader(xml)));
             return true;
         } catch (Exception e) {
+            System.err.println("Erreur de validation XSD: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
