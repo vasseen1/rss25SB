@@ -68,26 +68,41 @@ public class PostService {
 
             for (int i = 0; i < itemNodes.getLength(); i++) {
                 Element itemElem = (Element) itemNodes.item(i);
-
+            
                 String title = itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "title").item(0).getTextContent();
-                String date = null;
-                if(itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "published").getLength() > 0) {
-                    date = itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "published").item(0).getTextContent();
-                } else if(itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "updated").getLength() > 0) {
-                    date = itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "updated").item(0).getTextContent();
+                String dateStr = null;
+                if (itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "published").getLength() > 0) {
+                    dateStr = itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "published").item(0).getTextContent();
+                } else if (itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "updated").getLength() > 0) {
+                    dateStr = itemElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "updated").item(0).getTextContent();
                 }
-                boolean exists = itemRepository.existsByTitleAndDate(title, date);
+            
+                // Parse la date si elle existe, sinon laisse null
+                OffsetDateTime date = null;
+                if (dateStr != null) {
+                    date = OffsetDateTime.parse(dateStr);
+                }
+            
+                // Vérifie que la date n'est pas nulle avant de faire la requête
+                boolean exists = false;
+                if (date != null) {
+                    exists = itemRepository.existsByTitleAndPublished(title, date);
+                } else {
+                    // Si tu veux gérer le cas où il n'y a pas de date, tu peux vérifier juste par title
+                    exists = itemRepository.existsByTitle(title);
+                }
+            
                 if (!exists) {
                     Item item = new Item();
                     item.setTitle(title);
-                    OffsetDateTime publishedDate = OffsetDateTime.parse(date);
-                    item.setPublished(publishedDate);
+                    item.setPublished(date);
                     Item savedItem = itemRepository.save(item);
                     lastInsertedId = savedItem.getId();
                 } else {
-                    return -2; 
+                    return -2; // l'item existe déjà
                 }
             }
+            
 
             return (int) lastInsertedId;
 
