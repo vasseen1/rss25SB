@@ -140,7 +140,7 @@ public class PostService {
                     if (nameElem != null) {
                         item.setAuthorName(nameElem.getTextContent().trim());
                     }
-                    Element mailElem = (Element) authorElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "mail").item(0);
+                    Element mailElem = (Element) authorElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "email").item(0);
                     if (mailElem != null) {
                         item.setAuthorMail(mailElem.getTextContent().trim());
                     }
@@ -153,7 +153,14 @@ public class PostService {
                     if (nameElem != null) {
                         item.setAuthorName(nameElem.getTextContent().trim());
                     }
-                    // Pas d'email ni uri dans ton exemple pour contributor, mais tu peux gérer si besoin
+                    Element mailElem = (Element) contributorElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "email").item(0);
+                    if (mailElem != null) {
+                        item.setAuthorMail(mailElem.getTextContent().trim());
+                    }
+                    Element uriElem = (Element) contributorElem.getElementsByTagNameNS("http://univrouen.fr/rss25", "uri").item(0);
+                    if (uriElem != null) {
+                        item.setAuthorUri(uriElem.getTextContent().trim());
+                    }
                 }
     
                 // Sauvegarde
