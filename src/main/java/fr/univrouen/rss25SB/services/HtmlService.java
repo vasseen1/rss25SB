@@ -90,7 +90,7 @@ public class HtmlService {
     }
 
     private void createElementWithText(Document doc, Element parent, String tagName, String textContent) {
-        if (textContent != null && !textContent.isEmpty()) {
+        if (textContent != null && !textContent.trim().isEmpty()) {
             Element elem = doc.createElementNS("http://univ.fr/rss25", tagName);
             elem.setTextContent(textContent);
             parent.appendChild(elem);
