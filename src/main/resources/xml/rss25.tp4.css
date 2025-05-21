@@ -1,0 +1,45 @@
+h1{
+	color : blue;
+	font-weight : bold;
+	text-align : center;
+	
+}
+
+h2, h3{
+	color : blue;
+	font-weight : bold;
+}
+
+
+.Quantique {
+    color: darkGoldenRod;
+}
+
+.Historique {
+    color: slateBlue;
+}
+
+.Théorie {
+    color: indigo;
+}
+
+.Nucléaire {
+    color: red;
+}
+
+.Planete {
+    color: yellowGreen;
+}
+
+.Technique {
+    color: lavender;
+}
+
+.Robotique {
+    color: darkGreen;
+}
+
+.Contributeur {
+	font-style: italic;
+}
+
