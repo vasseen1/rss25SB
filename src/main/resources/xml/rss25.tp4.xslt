@@ -49,7 +49,7 @@
             <!-- Trier les items par date de publication ou mise à jour (plus récent en premier) -->
             <xsl:for-each select="rss:item">
               <xsl:sort select="if (rss:published) then xs:date(substring-before(rss:published, 'T')) else if (rss:updated) then xs:date(substring-before(rss:updated, 'T')) else xs:date('1900-01-01')" order="descending" data-type="text"/>
-              <tr>
+              <tr class="{rss:category/@term}">
                 <td>
                   <xsl:value-of select="position()"/> / <xsl:value-of select="count(/rss:feed/rss:item)"/>
                 </td>
