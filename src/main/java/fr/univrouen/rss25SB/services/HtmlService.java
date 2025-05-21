@@ -42,7 +42,9 @@ public class HtmlService {
 
         // Création de la racine <feed>
         Element feed = doc.createElementNS("http://univ.fr/rss25", "rss:feed");
+        feed.setAttribute("xmlns:rss", "http://univ.fr/rss25");  // <-- clé !
         doc.appendChild(feed);
+
 
         for (Item item : items) {
             Element itemElement = doc.createElementNS("http://univ.fr/rss25", "rss:item");
