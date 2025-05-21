@@ -66,13 +66,38 @@ public class HtmlService {
                 itemElement.appendChild(category);
             }
 
-            if (item.getAuthorName() != null) {
+            if (item.getImageHref() != null) {
+                Element image = doc.createElementNS("http://univ.fr/rss25", "rss:image");
+                image.setAttribute("href", item.getImageHref());
+                image.setAttribute("alt", Optional.ofNullable(item.getImageAlt()).orElse("Image"));
+                itemElement.appendChild(image);
+            }
+            
+
+            if (item.getAuthorName() != null || item.getAuthorMail() != null || item.getAuthorUri() != null) {
                 Element author = doc.createElementNS("http://univ.fr/rss25", "rss:author");
-                Element name = doc.createElementNS("http://univ.fr/rss25", "rss:name");
-                name.setTextContent(item.getAuthorName());
-                author.appendChild(name);
+            
+                if (item.getAuthorName() != null) {
+                    Element name = doc.createElementNS("http://univ.fr/rss25", "rss:name");
+                    name.setTextContent(item.getAuthorName());
+                    author.appendChild(name);
+                }
+            
+                if (item.getAuthorMail() != null) {
+                    Element email = doc.createElementNS("http://univ.fr/rss25", "rss:email");
+                    email.setTextContent(item.getAuthorMail());
+                    author.appendChild(email);
+                }
+            
+                if (item.getAuthorUri() != null) {
+                    Element uri = doc.createElementNS("http://univ.fr/rss25", "rss:uri");
+                    uri.setTextContent(item.getAuthorUri());
+                    author.appendChild(uri);
+                }
+            
                 itemElement.appendChild(author);
             }
+            
 
             feed.appendChild(itemElement);
         }
