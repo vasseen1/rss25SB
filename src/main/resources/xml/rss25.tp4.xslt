@@ -10,7 +10,7 @@
     <html>
       <head>
         <title>Projet xml</title>
-        <link rel="stylesheet" type="text/css" href="../src/main/resources/xml/rss25.tp4.css" />
+        <link rel="stylesheet" type="text/css" href="/rss25.tp4.css"/>
       </head>
       <body>
         <h1>Projet xml - articles</h1>
