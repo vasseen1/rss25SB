@@ -47,10 +47,17 @@ public class HtmlService {
         for (Item item : items) {
             Element itemElement = doc.createElementNS("http://univ.fr/rss25", "rss:item");
 
-            createElementWithText(doc, itemElement, "rss:title", item.getTitle());
-            createElementWithText(doc, itemElement, "rss:published", item.getPublished().toString());
-            createElementWithText(doc, itemElement, "rss:content", item.getContentSrc());
-            createElementWithText(doc, itemElement, "rss:guid", String.valueOf(item.getId()));
+            createElementWithText(doc, itemElement, "rss:title",
+                    Optional.ofNullable(item.getTitle()).orElse(""));
+
+            createElementWithText(doc, itemElement, "rss:published",
+                    Optional.ofNullable(item.getPublished()).map(Object::toString).orElse(""));
+
+            createElementWithText(doc, itemElement, "rss:content",
+                    Optional.ofNullable(item.getContentSrc()).orElse(""));
+
+            createElementWithText(doc, itemElement, "rss:guid",
+                    String.valueOf(item.getId()));
 
             if (item.getCategory() != null) {
                 Element category = doc.createElementNS("http://univ.fr/rss25", "rss:category");
@@ -88,4 +95,3 @@ public class HtmlService {
         }
     }
 }
-
