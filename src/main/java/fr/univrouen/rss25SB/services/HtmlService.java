@@ -58,8 +58,7 @@ public class HtmlService {
             createElementWithText(doc, itemElement, "rss:content",
                     Optional.ofNullable(item.getContentSrc()).orElse(""));
 
-            createElementWithText(doc, itemElement, "rss:guid",
-                    String.valueOf(item.getId()));
+            createElementWithText(doc, itemElement, "rss:guid", item.getGuid());
 
             if (item.getCategory() != null) {
                 Element category = doc.createElementNS("http://univ.fr/rss25", "rss:category");

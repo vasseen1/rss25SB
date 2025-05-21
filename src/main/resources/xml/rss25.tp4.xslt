@@ -9,11 +9,11 @@
   <xsl:template match="/rss:feed">
     <html>
       <head>
-        <title>TP4 - Flux RSS25</title>
-        <link rel="stylesheet" type="text/css" href="rss25.tp4.css" />
+        <title>Projet xml</title>
+        <link rel="stylesheet" type="text/css" href="/xml/rss25.tp4.css" />
       </head>
       <body>
-        <h1>TP4 - Flux RSS25</h1>
+        <h1>Projet xml - articles</h1>
 
         <p>Le 
           <xsl:value-of select="format-date(current-date(), '[D]')"/> 
@@ -33,18 +33,6 @@
           </xsl:choose>
           <xsl:value-of select="format-date(current-date(), '[Y]')"/>
         </p>
-
-        <h2>Description</h2>
-        <ul>
-          <li> Contenu : Physique : <xsl:value-of select="rss:title"/></li>
-          <li>publié le 
-            <xsl:variable name="pubDate" select="substring-before(rss:pubDate, 'T')"/>
-            <xsl:if test="$pubDate">
-              <xsl:value-of select="format-date(xs:date($pubDate), '[D] [MNn] [Y]')"/>
-            </xsl:if>
-          </li>
-          <li>copyright <xsl:value-of select="rss:copyright"/></li>
-        </ul>
 
         <h2>Synthèse des articles</h2>
         <table border="1">
