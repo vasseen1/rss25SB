@@ -77,7 +77,7 @@ public class HtmlService {
         }
 
         // Appliquer la transformation XSLT
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        TransformerFactory transformerFactory = new net.sf.saxon.TransformerFactoryImpl();
         Source xslt = new StreamSource(new File("src/main/resources/xml/rss25.tp4.xslt"));
         Transformer transformer = transformerFactory.newTransformer(xslt);
 
