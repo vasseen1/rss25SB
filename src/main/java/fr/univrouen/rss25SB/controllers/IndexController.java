@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IndexController {
 
+	// Page d'accueil contenant nos noms, prénoms, logo de l'université...
 	@GetMapping("/")
 	public String index() {
-		// Renvoie directement le code HTML sous forme de String
 		return "<!DOCTYPE html>" +
 				"<html>" +
 				"<head>" +
@@ -29,9 +29,9 @@ public class IndexController {
 				"</html>";
 	}
 
+	// Page contenant un tableau, qui renvoie les endpoints testables
 	@GetMapping("/help")
 	public String help() {
-		// Retourne le contenu HTML de la page d'aide
 		return "<!DOCTYPE html>" +
 				"<html>" +
 				"<head>" +
@@ -49,7 +49,6 @@ public class IndexController {
 				"<h1>Liste des opérations disponibles</h1>" +
 				"<p>Voici la liste des opérations gérées par notre service REST :</p>" +
 
-				// Table pour afficher les opérations disponibles
 				"<table>" +
 				"<thead>" +
 				"<tr><th>URL</th><th>Méthode</th><th>Résumé</th></tr>" +

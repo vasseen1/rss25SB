@@ -19,13 +19,14 @@ public class XMLController {
         this.xmlService = xmlService;
     }
 
-    // Récupère tous les articles
+    // Récupère l'intégralité des articles et les affiche sous la forme d'une page html
     @GetMapping("/rss25SB/resume/xml")
     public List<Item> resume() {
         return xmlService.resume();
     }
 
-    // Récupère un article par ID
+    // Récupère l'article d'id id et le renvoie sous la forme d'une page html
+    // Si l'article n'est pas toruvé, un message d'erreur est retourné.
     @GetMapping("/rss25SB/xml/{id}")
     public Object resumeById(@PathVariable int id) {
         Optional<Item> item = xmlService.resumeById((long) id);
