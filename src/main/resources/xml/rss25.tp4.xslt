@@ -154,13 +154,41 @@
 
           <p><xsl:value-of select="rss:content"/></p>
 
-          <xsl:if test="rss:author">
-            <p>Auteur : <xsl:value-of select="rss:author/rss:name"/></p>
-          </xsl:if>
+            <xsl:if test="rss:author">
+                <p>
+                    Auteur : 
+                    <xsl:value-of select="rss:author/rss:name"/>
+                    <xsl:if test="rss:author/rss:email">
+                        (<a href="mailto:{rss:author/rss:email}">
+                            <xsl:value-of select="rss:author/rss:email"/>
+                        </a>)
+                    </xsl:if>
+                    <xsl:if test="rss:author/rss:uri">
+                        -
+                        <a href="{rss:author/rss:uri}">
+                            <xsl:value-of select="rss:author/rss:uri"/>
+                        </a>
+                    </xsl:if>
+                </p>
+            </xsl:if>
 
           <xsl:if test="rss:contributor">
-            <p>Contributeur : <xsl:value-of select="rss:contributor/rss:name"/></p>
-          </xsl:if>
+            <p>
+                Contributeur : 
+                <xsl:value-of select="rss:contributor/rss:name"/>
+                <xsl:if test="rss:contributor/rss:email">
+                    (<a href="mailto:{rss:contributor/rss:email}">
+                        <xsl:value-of select="rss:contributor/rss:email"/>
+                    </a>)
+                </xsl:if>
+                <xsl:if test="rss:contributor/rss:uri">
+                    -
+                    <a href="{rss:contributor/rss:uri}">
+                        <xsl:value-of select="rss:contributor/rss:uri"/>
+                    </a>
+                </xsl:if>
+            </p>
+        </xsl:if>
         </xsl:for-each>
 
       </body>
