@@ -25,13 +25,19 @@ public class HtmlService {
         this.itemRepository = itemRepository;
     }
 
+    // renvoie la liste des articles présent dans la bdd
     public List<Item> resume() {
         return itemRepository.findAll();
     }
 
+    // Renvoie l'article associée à l'id dans la bdd
     public Optional<Item> resumeById(long id) {
         return itemRepository.findById(id);
     }
+
+    // Genère un code xml des articles présents dans la liste entrée en paramêtre
+    // et génère un code html à partir du code xml généré et du fichier 
+    // src/main/resources/xml/rss25.tp4.xslt.
 
     public String generateHtmlFromItems(List<Item> items) throws Exception {
         // Initialiser le document XML
@@ -49,23 +55,29 @@ public class HtmlService {
         for (Item item : items) {
             Element itemElement = doc.createElementNS("http://univ.fr/rss25", "rss:item");
 
+            // Ajout du titre
             createElementWithText(doc, itemElement, "rss:title",
                     Optional.ofNullable(item.getTitle()).orElse(""));
 
+            // Ajout de la date de publication
             createElementWithText(doc, itemElement, "rss:published",
                     Optional.ofNullable(item.getPublished()).map(Object::toString).orElse(""));
 
+            // Ajout du contenu
             createElementWithText(doc, itemElement, "rss:content",
                     Optional.ofNullable(item.getContentSrc()).orElse(""));
 
+            // Ajout du GUID
             createElementWithText(doc, itemElement, "rss:guid", item.getGuid());
 
+            // Si la catégorie n'est pas null, ajout de la catégorie
             if (item.getCategory() != null) {
                 Element category = doc.createElementNS("http://univ.fr/rss25", "rss:category");
                 category.setAttribute("term", item.getCategory());
                 itemElement.appendChild(category);
             }
 
+            // Si une image est présente, ajout de l'image.
             if (item.getImageHref() != null) {
                 Element image = doc.createElementNS("http://univ.fr/rss25", "rss:image");
                 image.setAttribute("href", item.getImageHref());
@@ -74,6 +86,7 @@ public class HtmlService {
             }
             
 
+            // Si un auteur est assodiée, ajout des infos de l'auteur.
             if (item.getAuthorName() != null || item.getAuthorMail() != null || item.getAuthorUri() != null) {
                 Element author = doc.createElementNS("http://univ.fr/rss25", "rss:author");
             
@@ -98,11 +111,10 @@ public class HtmlService {
                 itemElement.appendChild(author);
             }
             
-
             feed.appendChild(itemElement);
         }
 
-        // Appliquer la transformation XSLT
+        // Une fois le flux xml généré, on applique la transformation du fichier xslt.
         TransformerFactory transformerFactory = new net.sf.saxon.TransformerFactoryImpl();
         Source xslt = new StreamSource(new File("src/main/resources/xml/rss25.tp4.xslt"));
         Transformer transformer = transformerFactory.newTransformer(xslt);
@@ -113,6 +125,7 @@ public class HtmlService {
         return writer.toString();
     }
 
+    // Méthode utilisée dans generateHtmlFromItems pour crée des nodes.
     private void createElementWithText(Document doc, Element parent, String tagName, String textContent) {
         if (textContent != null && !textContent.trim().isEmpty()) {
             Element elem = doc.createElementNS("http://univ.fr/rss25", tagName);

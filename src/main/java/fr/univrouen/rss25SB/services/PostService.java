@@ -33,6 +33,9 @@ public class PostService {
         this.itemRepository = itemRepository;
     }
 
+    // Supprime l'article dont l'id est id.
+    // S'il existe et est supprimée, alors renvoie true,
+    // Sinon, renvoie false.
     public boolean delete(long id) {
         if (itemRepository.existsById(id)) {
             itemRepository.deleteById(id);
@@ -41,6 +44,8 @@ public class PostService {
         return false;
     }
 
+    // Méthode qui vérifie que le fichier xml soit conforme au fichier xsd 
+    // src/main/resources/xml/rss25.tp.xsd
     public boolean validateXMLSchema(String xsdPath, String xml) {
         try {
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -55,6 +60,14 @@ public class PostService {
         }
     }
 
+    // Méthode d'insertion des articles dans la table.
+    // Cette méthode va appeler valideXMLSchema. si le fichier 
+    // n'est pas conforme, elle renvoie -1.
+    // Si l'article en cours d'insertion existe déja 
+    // dans la base de données, elle renvoie -2.
+    // Si une erreur survient, elle renvoie -3.
+    // Enfin, si tout ce passe bien, elle renvoie l'id du dernier 
+    // élément insérée.
     public int insertRssFeed(String rssXml) {
         if (!validateXMLSchema("/xml/rss25.tp.xsd", rssXml)) {
             return -1;
@@ -176,7 +189,7 @@ public class PostService {
         }
     }
     
-    // Helper pour extraire le texte d'un élément si il existe
+    // Méthode qui extrait le texte d'un élément s'il existe.
     private String getTextContentIfExists(Element parent, String tagName) {
         NodeList list = parent.getElementsByTagNameNS("http://univrouen.fr/rss25", tagName);
         if (list.getLength() > 0) {

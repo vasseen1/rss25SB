@@ -17,10 +17,12 @@ public class XmlService {
         this.itemRepository = itemRepository;
     }
 
+    // Récupère les articles présent dans la base et les affiche
     public List<Item> resume() {
         return itemRepository.findAll();
     }
 
+    // Récupère l'article dont l'id est id.
     public Optional<Item> resumeById(long id) {
         return itemRepository.findById(id);
     }
