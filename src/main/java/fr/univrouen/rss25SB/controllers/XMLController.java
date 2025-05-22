@@ -21,8 +21,9 @@ public class XMLController {
 
     // Récupère l'intégralité des articles et les affiche sous la forme d'une page html
     @GetMapping("/rss25SB/resume/xml")
-    public List<Item> resume() {
-        return xmlService.resume();
+    public String resumeXML() throws Exception {
+        List<Item> items = xmlService.resume();
+        return xmlService.generateXMLFromItems(items);
     }
 
     // Récupère l'article d'id id et le renvoie sous la forme d'une page html
