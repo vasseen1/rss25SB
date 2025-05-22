@@ -3,9 +3,13 @@ package fr.univrouen.rss25SB.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import fr.univrouen.rss25SB.services.XmlService;
 import fr.univrouen.rss25SB.entities.Item;
@@ -19,11 +23,14 @@ public class XMLController {
         this.xmlService = xmlService;
     }
 
-    // Récupère l'intégralité des articles et les affiche sous la forme d'une page html
-    @GetMapping("/rss25SB/resume/xml")
-    public String resumeXML() throws Exception {
+    @GetMapping(value = "/rss25SB/resume/xml", produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<String> resumeXML() throws Exception {
         List<Item> items = xmlService.resume();
-        return xmlService.generateXMLFromItems(items);
+        String xmlContent = xmlService.generateXMLFromItems(items);
+        
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+                .body(xmlContent);
     }
 
     // Récupère l'article d'id id et le renvoie sous la forme d'une page html
