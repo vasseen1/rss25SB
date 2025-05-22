@@ -33,15 +33,20 @@ public class XMLController {
                 .body(xmlContent);
     }
 
-    // Récupère l'article d'id id et le renvoie sous la forme d'une page html
-    // Si l'article n'est pas toruvé, un message d'erreur est retourné.
-    @GetMapping("/rss25SB/xml/{id}")
-    public Object resumeById(@PathVariable int id) {
-        Optional<Item> item = xmlService.resumeById((long) id);
+    @GetMapping(value = "/rss25SB/xml/{id}", produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<String> resumeById(@PathVariable long id) throws Exception {
+        Optional<Item> item = xmlService.resumeById(id);
+        String xml;
+
         if (item.isPresent()) {
-            return item.get();
+            xml = xmlService.generateXMLFromItems(List.of(item.get()));
         } else {
-            return "Article non trouvé pour l'id : " + id;
+            xml = xmlService.generateErrorXML(id);
         }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+                .body(xml);
     }
+
 }

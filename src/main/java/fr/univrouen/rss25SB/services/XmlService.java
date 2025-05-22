@@ -124,4 +124,34 @@ public class XmlService {
             parent.appendChild(elem);
         }
     }
+
+    public String generateErrorXML(long id) throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.newDocument();
+    
+        Element error = doc.createElementNS("http://univ.fr/rss25", "rss:error");
+        error.setAttribute("xmlns:rss", "http://univ.fr/rss25");
+        doc.appendChild(error);
+    
+        createElementWithText(doc, error, "rss:id", String.valueOf(id));
+        createElementWithText(doc, error, "rss:status", "ERROR");
+    
+        return serializeDocumentToString(doc);
+    }
+
+    private String serializeDocumentToString(Document doc) throws Exception {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+    
+        StringWriter writer = new StringWriter();
+        transformer.transform(new DOMSource(doc), new StreamResult(writer));
+        return writer.toString();
+    }
+    
+    
 }
