@@ -62,7 +62,7 @@ public class PostController {
         boolean result = postService.delete(id);
         if (result) {
             // L'article à bien été supprimé de la base.
-            return "<response><status>DELETED</status><message>Article "+ id + "deleted</message></response>";
+            return "<response><status>DELETED</status><message>Article "+ id + " deleted</message></response>";
         }
         // Erreur. L'article est introuvable par exemple.
         return "<response><status>ERROR</status><message>Article introuvable ou erreur interne</message></response>";
